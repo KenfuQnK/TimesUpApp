@@ -353,7 +353,7 @@ const handlePlayerSelect = (playerId) => {
                 Cartas Usadas
               </h2>
               <div className="text-center text-purple-800 mb-4">
-                {usedCards.length} / {availableCards.length} cartas usadas
+                {usedCards.length} cartas usadas / {availableCards.length} cartas restantes
               </div>
               <div className="space-y-2">
                 {usedCards.map((card, index) => (
