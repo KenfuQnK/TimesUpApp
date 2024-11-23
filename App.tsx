@@ -25,6 +25,7 @@ const App = () => {
   const [roundNumber, setRoundNumber] = useState(1);
   const [availableCards, setAvailableCards] = useState([...texts]);
   const [lastCardMarked, setLastCardMarked] = useState(false);
+  const [lastActivePlayer, setLastActivePlayer] = useState(null);
 
   const startGame = () => {
     setGameStarted(true);
@@ -34,6 +35,7 @@ const App = () => {
     if (availableCards.length === 0) {
       setAvailableCards([...texts]);
     }
+    setLastActivePlayer(activePlayer);
     selectRandomText();
   };
 
@@ -48,6 +50,7 @@ const App = () => {
       setUsedCards([]); // Clear used cards for new round
       setRoundNumber(prev => prev + 1);
       setLastCardMarked(false);
+      setLastActivePlayer(null);
     }
   };
 
@@ -145,16 +148,16 @@ const handleCorrectAnswer = () => {
   }
 };
 
-  const handlePlayerSelect = (playerId) => {
-    if (timerActive) return;
-    if (activePlayer !== playerId) {
-      setActivePlayer(playerId);
-      setGameStarted(false);
-      setTimeLeft(ROUND_TIME_SECONDS);
-      setTimerActive(false);
-      setCurrentText('');
-    }
-  };
+const handlePlayerSelect = (playerId) => {
+  if (timerActive) return;
+  if (activePlayer !== playerId) {
+    setActivePlayer(playerId);
+    setGameStarted(false);
+    setTimeLeft(ROUND_TIME_SECONDS);
+    setTimerActive(false);
+    setCurrentText('');
+  }
+};
 
   const renderContent = () => {
     switch (activeTab) {
@@ -230,8 +233,12 @@ const handleCorrectAnswer = () => {
                     <div className="flex flex-col gap-4">
                       <Button
                         onClick={startGame}
-                        disabled={availableCards.length === 0}
-                        className="w-48 h-48 rounded-full mx-auto bg-green-500 hover:bg-green-600 text-xl flex flex-col items-center justify-center gap-2"
+                        disabled={availableCards.length === 0 || activePlayer === lastActivePlayer}
+                        className={`w-48 h-48 rounded-full mx-auto ${
+                          availableCards.length === 0 || activePlayer === lastActivePlayer
+                            ? 'bg-gray-400 cursor-not-allowed' 
+                            : 'bg-green-500 hover:bg-green-600'
+                        } text-xl flex flex-col items-center justify-center gap-2`}
                       >
                         <Play className="h-16 w-16 mr-2" />
                         Jugar
