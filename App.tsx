@@ -6,57 +6,69 @@ import { Input } from './components/Input';
 import { Plus, Shuffle, X, Check, Trophy, UserCircle, Play, RotateCcw, History } from 'lucide-react';
 import { INITIAL_CARDS } from './LIST';
 
-// Constante para definir el tiempo del contador
-const DEFAULT_TIME = 40;
+// Definición de constantes globales
+const ROUND_TIME_SECONDS = 30;
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('input');
   const [texts, setTexts] = useState(INITIAL_CARDS);
   const [currentText, setCurrentText] = useState('');
   const [inputText, setInputText] = useState('');
-  const [timeLeft, setTimeLeft] = useState(DEFAULT_TIME);
+  const [timeLeft, setTimeLeft] = useState(ROUND_TIME_SECONDS);
   const [timerActive, setTimerActive] = useState(false);
   const [players, setPlayers] = useState([]);
   const [activePlayer, setActivePlayer] = useState(null);
   const [newPlayerName, setNewPlayerName] = useState('');
   const [gameStarted, setGameStarted] = useState(false);
   const [usedCards, setUsedCards] = useState([]);
-  const [roundCounter, setRoundCounter] = useState(0); // Contador de rondas
+  const [isNewRound, setIsNewRound] = useState(false);
+  const [roundNumber, setRoundNumber] = useState(1);
+  const [availableCards, setAvailableCards] = useState([...texts]);
 
   const startGame = () => {
     setGameStarted(true);
     setTimerActive(true);
+    setRoundNumber(prev => prev + 1);
+    // Reset available cards for new round if needed
+    if (availableCards.length === 0) {
+      setAvailableCards([...texts]);
+    }
     selectRandomText();
   };
 
   const startNewRound = () => {
-    if (usedCards.length > 0) {
-      setRoundCounter(roundCounter + 1); // Incrementar el contador de rondas
+    if (usedCards.length > 1) {
+      setIsNewRound(true);
       setGameStarted(false);
       setTimerActive(false);
-      setTimeLeft(DEFAULT_TIME);
+      setTimeLeft(ROUND_TIME_SECONDS);
       setCurrentText('');
-      setUsedCards([]);
+      setAvailableCards([...usedCards]); // Reset available cards with used cards
+      setUsedCards([]); // Clear used cards for new round
     }
   };
 
   const resetGame = () => {
     setPlayers(players.map(player => ({ ...player, score: 0 })));
     setUsedCards([]);
-    setRoundCounter(0); // Reiniciar el contador de rondas
+    setIsNewRound(false);
     setGameStarted(false);
     setTimerActive(false);
-    setTimeLeft(DEFAULT_TIME);
+    setTimeLeft(ROUND_TIME_SECONDS);
     setCurrentText('');
+    setRoundNumber(1);
+    setAvailableCards([...texts]);
   };
 
   const selectRandomText = () => {
-    const remainingCards = texts.filter(card => !usedCards.includes(card));
-    if (remainingCards.length === 0) return;
-
-    const newText = remainingCards[Math.floor(Math.random() * remainingCards.length)];
+    if (availableCards.length === 0) return;
+    
+    const randomIndex = Math.floor(Math.random() * availableCards.length);
+    const newText = availableCards[randomIndex];
+    
     setCurrentText(newText);
-    setUsedCards([...usedCards, newText]);
+    setUsedCards(prev => [...prev, newText]);
+    setAvailableCards(prev => prev.filter((_, index) => index !== randomIndex));
   };
 
   useEffect(() => {
@@ -74,14 +86,17 @@ const App = () => {
 
   const handleAddText = () => {
     if (!inputText.trim()) return;
-    setTexts([...texts, inputText.trim()]);
+    setTexts(prev => [...prev, inputText.trim()]);
+    setAvailableCards(prev => [...prev, inputText.trim()]);
     setInputText('');
   };
 
   const handleDeleteText = (indexToDelete) => {
     setTexts(texts.filter((_, index) => index !== indexToDelete));
+    setAvailableCards(availableCards.filter((_, index) => index !== indexToDelete));
   };
 
+  // Resto de handlers sin cambios...
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -109,7 +124,7 @@ const App = () => {
     if (!activePlayer || timeLeft === 0) return;
     setPlayers(players.map(player => 
       player.id === activePlayer 
-        ? { ...player, score: player.score + 1 }
+        ? {...player, score: player.score + 1}
         : player
     ));
     selectRandomText();
@@ -120,7 +135,7 @@ const App = () => {
     if (activePlayer !== playerId) {
       setActivePlayer(playerId);
       setGameStarted(false);
-      setTimeLeft(DEFAULT_TIME);
+      setTimeLeft(ROUND_TIME_SECONDS);
       setTimerActive(false);
       setCurrentText('');
     }
@@ -153,7 +168,10 @@ const App = () => {
                     key={index}
                     className="flex items-center justify-between p-3 bg-purple-100 rounded-lg px-3"
                   >
-                    <span className="text-purple-800">{index + 1}. {text}</span>
+                    <span className="text-purple-800">
+                      <span className="font-bold mr-2">{index + 1}.</span>
+                      {text}
+                    </span>
                     <button
                       onClick={() => handleDeleteText(index)}
                       className="text-red-500 hover:text-red-700"
@@ -174,17 +192,131 @@ const App = () => {
               {activePlayer ? (
                 <>
                   <div className="mb-4 flex items-center justify-between">
-                    <span className="font-bold text-purple-800">Ronda: {roundCounter}</span>
-                    <span className="font-bold text-purple-800">
-                      Cartas mostradas: {usedCards.length} / {texts.length}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <UserCircle className="h-5 w-5 text-purple-600" />
+                      <span className="font-medium text-purple-800">
+                        {players.find(p => p.id === activePlayer)?.name}
+                      </span>
+                      <Trophy className="h-5 w-5 text-yellow-500 ml-2" />
+                      <span className="font-bold text-purple-800">
+                        {players.find(p => p.id === activePlayer)?.score || 0}
+                      </span>
+                    </div>
+                    <div className="text-purple-800 font-bold">
+                      Ronda: {roundNumber}
+                    </div>
                   </div>
-                  {/* Rest of game screen */}
+                  
+                  <div className="text-3xl font-bold mb-4 text-purple-800">
+                    {timeLeft}s
+                  </div>
+
+                  {!gameStarted ? (
+                    <div className="flex flex-col gap-4">
+                      <Button
+                        onClick={startGame}
+                        className="w-48 h-48 rounded-full mx-auto bg-green-500 hover:bg-green-600 text-xl flex flex-col items-center justify-center gap-2"
+                      >
+                        <Play className="h-16 w-16 mr-2" />
+                        Jugar
+                      </Button>
+                      {usedCards.length > 1 && (
+                        <Button
+                          onClick={startNewRound}
+                          className="bg-purple-500 hover:bg-purple-600 w-48 mx-auto flex items-center justify-center"
+                        >
+                          <RotateCcw className="mr-2 h-4 w-4" />
+                          Siguiente ronda
+                        </Button>
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="relative mb-4">
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-200 to-pink-200 transform rotate-1 rounded-lg" />
+                        <div className="relative bg-purple-100 p-6 rounded-lg min-h-[200px] flex items-center justify-center text-xl font-medium text-purple-900">
+                          {currentText || "Pulsa Siguiente para empezar"}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={selectRandomText}
+                          disabled={availableCards.length === 0}
+                          className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                        >
+                          <Shuffle className="mr-2 h-4 w-4" /> Siguiente
+                        </Button>
+                        <Button
+                          onClick={handleCorrectAnswer}
+                          disabled={!currentText || timeLeft === 0}
+                          className="flex-1 bg-green-500 hover:bg-green-600"
+                        >
+                          <Check className="mr-2 h-4 w-4" /> Correcto
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </>
               ) : (
                 <div className="text-center text-purple-800 py-8">
                   Selecciona un jugador en la pestaña "Jugadores" para comenzar
                 </div>
+              )}
+            </CardContent>
+          </Card>
+        );
+
+      case 'players':
+        return (
+          <Card className="bg-white/90 backdrop-blur-sm">
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold mb-4 text-center text-purple-800">
+                Jugadores
+              </h2>
+              <div className="flex gap-2 mb-4">
+                <Input
+                  value={newPlayerName}
+                  onChange={(e) => setNewPlayerName(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Nombre del jugador..."
+                  className="flex-1"
+                />
+                <Button onClick={handleAddPlayer} size="icon">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="space-y-2">
+                {players.map((player) => (
+                  <div
+                    key={player.id}
+                    onClick={() => handlePlayerSelect(player.id)}
+                    className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
+                      timerActive
+                        ? 'opacity-50 cursor-not-allowed'
+                        : activePlayer === player.id
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-purple-100 text-purple-800 hover:bg-purple-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <UserCircle className="h-5 w-5" />
+                      <span className="font-medium">{player.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Trophy className="h-5 w-5" />
+                      <span className="font-bold">{player.score}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {players.length > 0 && (
+                <Button
+                  onClick={resetGame}
+                  className="w-full mt-4 bg-red-500 hover:bg-red-600"
+                >
+                  <RotateCcw className="mr-2 h-4 w-4" />
+                  Reiniciar juego
+                </Button>
               )}
             </CardContent>
           </Card>
@@ -197,8 +329,8 @@ const App = () => {
               <h2 className="text-2xl font-bold mb-4 text-center text-purple-800">
                 Cartas Usadas
               </h2>
-              <div className="text-center mb-4 text-purple-800">
-                {usedCards.length} / {texts.length}
+              <div className="text-center text-purple-800 mb-4">
+                {usedCards.length} / {texts.length} cartas mostradas
               </div>
               <div className="space-y-2">
                 {usedCards.map((card, index) => (
@@ -206,9 +338,15 @@ const App = () => {
                     key={index}
                     className="p-3 bg-purple-100 rounded-lg text-purple-800"
                   >
-                    {index + 1}. {card}
+                    <span className="font-bold mr-2">{index + 1}.</span>
+                    {card}
                   </div>
                 ))}
+                {usedCards.length === 0 && (
+                  <div className="text-center text-gray-500 py-4">
+                    No hay cartas usadas todavía
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -219,10 +357,52 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 p-4">
       <div className="max-w-md mx-auto">
-        <div className="mb-20">{renderContent()}</div>
+        <div className="mb-20">
+          {renderContent()}
+        </div>
+
         <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm">
           <div className="max-w-md mx-auto flex">
-            {/* Navigation buttons */}
+            <button
+              onClick={() => setActiveTab('input')}
+              className={`flex-1 p-4 text-center font-medium ${
+                activeTab === 'input'
+                  ? 'text-purple-600 border-t-2 border-purple-600'
+                  : 'text-gray-500'
+              }`}
+            >
+              Mis Cartas
+            </button>
+            <button
+              onClick={() => setActiveTab('game')}
+              className={`flex-1 p-4 text-center font-medium ${
+                 activeTab === 'game'
+                  ? 'text-purple-600 border-t-2 border-purple-600'
+                  : 'text-gray-500'
+              }`}
+            >
+              Jugar
+            </button>
+            <button
+              onClick={() => setActiveTab('players')}
+              className={`flex-1 p-4 text-center font-medium ${
+                activeTab === 'players'
+                  ? 'text-purple-600 border-t-2 border-purple-600'
+                  : 'text-gray-500'
+              }`}
+            >
+              Jugadores
+            </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              className={`flex-1 p-4 text-center font-medium ${
+                activeTab === 'history'
+                  ? 'text-purple-600 border-t-2 border-purple-600'
+                  : 'text-gray-500'
+              }`}
+            >
+              Historial
+            </button>
           </div>
         </div>
       </div>
