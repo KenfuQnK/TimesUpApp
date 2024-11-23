@@ -28,7 +28,7 @@ const App = () => {
   const startGame = () => {
     setGameStarted(true);
     setTimerActive(true);
-    setRoundNumber(prev => prev + 1);
+    
     // Reset available cards for new round if needed
     if (availableCards.length === 0) {
       setAvailableCards([...texts]);
@@ -45,6 +45,7 @@ const App = () => {
       setCurrentText('');
       setAvailableCards([...usedCards]); // Reset available cards with used cards
       setUsedCards([]); // Clear used cards for new round
+      setRoundNumber(prev => prev + 1);
     }
   };
 
@@ -330,7 +331,7 @@ const App = () => {
                 Cartas Usadas
               </h2>
               <div className="text-center text-purple-800 mb-4">
-                {usedCards.length} / {texts.length} cartas mostradas
+                {availableCards.length} / {usedCards.length} cartas usadas
               </div>
               <div className="space-y-2">
                 {usedCards.map((card, index) => (
