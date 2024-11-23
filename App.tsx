@@ -24,6 +24,7 @@ const App = () => {
   const [isNewRound, setIsNewRound] = useState(false);
   const [roundNumber, setRoundNumber] = useState(1);
   const [availableCards, setAvailableCards] = useState([...texts]);
+  const [lastCardMarked, setLastCardMarked] = useState(false);
 
   const startGame = () => {
     setGameStarted(true);
@@ -46,6 +47,7 @@ const App = () => {
       setAvailableCards([...usedCards]); // Reset available cards with used cards
       setUsedCards([]); // Clear used cards for new round
       setRoundNumber(prev => prev + 1);
+      setLastCardMarked(false);
     }
   };
 
@@ -59,6 +61,7 @@ const App = () => {
     setCurrentText('');
     setRoundNumber(1);
     setAvailableCards([...texts]);
+    setLastCardMarked(false);
   };
 
   const selectRandomText = () => {
@@ -121,15 +124,26 @@ const App = () => {
     if (!activePlayer) setActivePlayer(newPlayer.id);
   };
 
-  const handleCorrectAnswer = () => {
-    if (!activePlayer || timeLeft === 0) return;
-    setPlayers(players.map(player => 
-      player.id === activePlayer 
-        ? {...player, score: player.score + 1}
-        : player
-    ));
+const handleCorrectAnswer = () => {
+  if (!activePlayer || timeLeft === 0) return;
+  
+  // Si es la última carta y ya ha sido marcada, no hacer nada
+  if (availableCards.length === 0 && lastCardMarked) return;
+  
+  setPlayers(players.map(player => 
+    player.id === activePlayer 
+      ? {...player, score: player.score + 1}
+      : player
+  ));
+
+  // Si hay más cartas disponibles, seleccionar siguiente
+  if (availableCards.length > 0) {
     selectRandomText();
-  };
+  } else {
+    // Si es la última carta, marcarla como usada
+    setLastCardMarked(true);
+  }
+};
 
   const handlePlayerSelect = (playerId) => {
     if (timerActive) return;
@@ -216,6 +230,7 @@ const App = () => {
                     <div className="flex flex-col gap-4">
                       <Button
                         onClick={startGame}
+                        disabled={availableCards.length === 0}
                         className="w-48 h-48 rounded-full mx-auto bg-green-500 hover:bg-green-600 text-xl flex flex-col items-center justify-center gap-2"
                       >
                         <Play className="h-16 w-16 mr-2" />
