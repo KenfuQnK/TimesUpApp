@@ -7,7 +7,7 @@ import { Plus, Shuffle, X, Check, Trophy, UserCircle, Play, RotateCcw, History }
 import { INITIAL_CARDS } from './LIST';
 
 // Definición de constantes globales
-const ROUND_TIME_SECONDS = 30;
+const ROUND_TIME_SECONDS = 10;
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('input');
@@ -224,7 +224,7 @@ const App = () => {
                       {usedCards.length > 1 && (
                         <Button
                           onClick={startNewRound}
-                          className="bg-purple-500 hover:bg-purple-600 w-48 mx-auto flex items-center justify-center"
+                          className="bg-tomato-500 hover:bg-purple-600 w-48 h-48 mx-auto flex items-center justify-center"
                         >
                           <RotateCcw className="mr-2 h-4 w-4" />
                           Siguiente ronda
@@ -356,7 +356,7 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 p-4 bg-purple-500">
       <div className="max-w-md mx-auto">
         <div className="mb-20">
           {renderContent()}
@@ -396,7 +396,7 @@ const App = () => {
             </button>
             <button
               onClick={() => setActiveTab('history')}
-              className={`flex-1 p-4 text-center font-medium ${
+              className={`flex-1 p-4 text-center font-medium bg-purple-100 ${
                 activeTab === 'history'
                   ? 'text-purple-600 border-t-2 border-purple-600'
                   : 'text-gray-500'
