@@ -245,7 +245,7 @@ const App = () => {
                       {usedCards.length > 1 && (
                         <Button
                           onClick={startNewRound}
-                          className="bg-purple-500 hover:bg-purple-600"
+                          className="bg-tomato-500 hover:bg-purple-600"
                         >
                           <RotateCcw className="mr-2 h-4 w-4" />
                           Nueva ronda con cartas usadas
