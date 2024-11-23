@@ -237,15 +237,15 @@ const App = () => {
                     <div className="flex flex-col gap-4">
                       <Button
                         onClick={startGame}
-                        className="w-24 h-24 rounded-full mx-auto bg-green-500 hover:bg-green-600 text-xl flex flex-col items-center justify-center gap-2"
+                        className="w-48 h-48 rounded-full mx-auto bg-green-500 hover:bg-green-600 text-xl flex flex-col items-center justify-center gap-2"
                       >
                         <Play className="h-16 w-16 mr-2" />
-                        Empezar a jugar
+                        Jugar
                       </Button>
                       {usedCards.length > 1 && (
                         <Button
                           onClick={startNewRound}
-                          className="bg-tomato-500 hover:bg-purple-600 w-24 h-24"
+                          className="bg-tomato-500 hover:bg-purple-600 w-48 h-48"
                         >
                           <RotateCcw className="mr-2 h-4 w-4 ml-2" />
                           Siguiente ronda
@@ -264,9 +264,9 @@ const App = () => {
                         <Button
                           onClick={selectRandomText}
                           disabled={texts.length === 0}
-                          className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                          className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 bg-tomato-500"
                         >
-                          <Shuffle className="mr-2 h-4 w-4 bg-tomato-500" /> Siguiente
+                          <Shuffle className="mr-2 h-4 w-4 " /> Siguiente
                         </Button>
                         <Button
                           onClick={handleCorrectAnswer}
