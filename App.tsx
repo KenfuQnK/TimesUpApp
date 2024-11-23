@@ -3,7 +3,7 @@ import { Card } from './components/Card';
 import { CardContent } from './components/CardContent';
 import { Button } from './components/Button';
 import { Input } from './components/Input';
-//import { Plus, Shuffle, X, Check, Trophy, UserCircle, Play, RotateCcw, History } from 'lucide-react';
+import { Plus, Shuffle, X, Check, Trophy, UserCircle, Play, RotateCcw, History } from 'lucide-react';
 
 const INITIAL_CARDS = [
   "Leonardo DiCaprio","Taylor Swift","Brad Pitt","Shakira","Tom Cruise","Will Smith","Lady Gaga",
