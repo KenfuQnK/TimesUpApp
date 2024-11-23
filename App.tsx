@@ -196,7 +196,7 @@ const App = () => {
                 {texts.map((text, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-3 bg-purple-100 rounded-lg"
+                    className="flex items-center justify-between p-3 bg-purple-100 rounded-lg px-3"
                   >
                     <span className="text-purple-800">{text}</span>
                     <button
@@ -256,7 +256,7 @@ const App = () => {
                     <>
                       <div className="relative mb-4">
                         <div className="absolute inset-0 bg-gradient-to-r from-purple-200 to-pink-200 transform rotate-1 rounded-lg" />
-                        <div className="relative bg-white p-6 rounded-lg min-h-[200px] flex items-center justify-center text-xl font-medium text-purple-900">
+                        <div className="relative bg-purple-100 p-6 rounded-lg min-h-[200px] flex items-center justify-center text-xl font-medium text-purple-900">
                           {currentText || "Pulsa Siguiente para empezar"}
                         </div>
                       </div>
@@ -373,7 +373,7 @@ const App = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 to-pink-500 p-4 bg-purple-500">
       <div className="max-w-md mx-auto">
         <div className="mb-20">
           {renderContent()}
