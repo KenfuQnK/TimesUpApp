@@ -220,7 +220,7 @@ const App = () => {
                 <>
                   <div className="mb-4 flex items-center justify-center gap-2">
                     <UserCircle className="h-5 w-5 text-purple-600" />
-                    <span className="font-medium text-purple-800">
+                    <span className="font-medium text-purple-800 mr-4">
                       {players.find(p => p.id === activePlayer)?.name}
                     </span>
                     <Trophy className="h-5 w-5 text-yellow-500" />
@@ -239,7 +239,7 @@ const App = () => {
                         onClick={startGame}
                         className="w-24 h-24 rounded-full mx-auto bg-green-500 hover:bg-green-600 text-xl flex flex-col items-center justify-center gap-2"
                       >
-                        <Play className="h-16 w-16" />
+                        <Play className="h-16 w-16 mr-2" />
                         Empezar a jugar
                       </Button>
                       {usedCards.length > 1 && (
@@ -247,7 +247,7 @@ const App = () => {
                           onClick={startNewRound}
                           className="bg-tomato-500 hover:bg-purple-600 w-24 h-24"
                         >
-                          <RotateCcw className="mr-2 h-4 w-4" />
+                          <RotateCcw className="mr-2 h-4 w-4 ml-2" />
                           Siguiente ronda
                         </Button>
                       )}
