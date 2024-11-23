@@ -7,7 +7,7 @@ import { Plus, Shuffle, X, Check, Trophy, UserCircle, Play, RotateCcw, History }
 import { INITIAL_CARDS } from './LIST';
 
 // Definición de constantes globales
-const ROUND_TIME_SECONDS = 10;
+const ROUND_TIME_SECONDS = 40;
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('input');
@@ -194,13 +194,13 @@ const App = () => {
                 <>
                   <div className="mb-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <UserCircle className="h-5 w-5 text-purple-600" />
-                      <span className="font-medium text-purple-800">
-                        {players.find(p => p.id === activePlayer)?.name}
-                      </span>
-                      <Trophy className="h-5 w-5 text-yellow-500 ml-2" />
+                      <Trophy className="h-5 w-5 text-yellow-500" />
                       <span className="font-bold text-purple-800">
                         {players.find(p => p.id === activePlayer)?.score || 0}
+                      </span>
+                      <UserCircle className="h-5 w-5 text-purple-600 ml-2" />
+                      <span className="font-medium text-purple-800">
+                        {players.find(p => p.id === activePlayer)?.name}
                       </span>
                     </div>
                     <div className="text-purple-800 font-bold">
@@ -331,7 +331,7 @@ const App = () => {
                 Cartas Usadas
               </h2>
               <div className="text-center text-purple-800 mb-4">
-                {availableCards.length} / {usedCards.length} cartas usadas
+                {usedCards.length} / {availableCards.length} cartas usadas
               </div>
               <div className="space-y-2">
                 {usedCards.map((card, index) => (
@@ -368,7 +368,7 @@ const App = () => {
               onClick={() => setActiveTab('input')}
               className={`flex-1 p-4 text-center font-medium ${
                 activeTab === 'input'
-                  ? 'text-purple-600 border-t-2 border-purple-600'
+                  ? 'text-purple-600 border-t-2 border-purple-600 bg-purple-100'
                   : 'text-gray-500'
               }`}
             >
@@ -378,7 +378,7 @@ const App = () => {
               onClick={() => setActiveTab('game')}
               className={`flex-1 p-4 text-center font-medium ${
                  activeTab === 'game'
-                  ? 'text-purple-600 border-t-2 border-purple-600'
+                  ? 'text-purple-600 border-t-2 border-purple-600 bg-purple-100'
                   : 'text-gray-500'
               }`}
             >
@@ -388,7 +388,7 @@ const App = () => {
               onClick={() => setActiveTab('players')}
               className={`flex-1 p-4 text-center font-medium ${
                 activeTab === 'players'
-                  ? 'text-purple-600 border-t-2 border-purple-600'
+                  ? 'text-purple-600 border-t-2 border-purple-600 bg-purple-100'
                   : 'text-gray-500'
               }`}
             >
@@ -396,9 +396,9 @@ const App = () => {
             </button>
             <button
               onClick={() => setActiveTab('history')}
-              className={`flex-1 p-4 text-center font-medium bg-purple-100 ${
+              className={`flex-1 p-4 text-center font-medium ${
                 activeTab === 'history'
-                  ? 'text-purple-600 border-t-2 border-purple-600'
+                  ? 'text-purple-600 border-t-2 border-purple-600 bg-purple-100'
                   : 'text-gray-500'
               }`}
             >
