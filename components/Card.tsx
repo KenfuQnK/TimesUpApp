@@ -1,12 +1,14 @@
-import React from "react";
+import * as React from "react"
+import { cn } from "./utils"
 
-interface CardProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const Card: React.FC<CardProps> = ({ children, className }) => {
-  return (
-    <div className={`rounded-lg shadow-lg ${className}`}>{children}</div>
-  );
-};
+export const Card = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      className
+    )}
+    {...props}
+  />
+))
+Card.displayName = "Card"
