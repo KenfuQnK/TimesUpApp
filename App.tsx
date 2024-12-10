@@ -10,7 +10,7 @@ import { INITIAL_CARDS } from './LIST';
 const ROUND_TIME_SECONDS = 40;
 
 const App = () => {
-  const [activeTab, setActiveTab] = useState('input');
+  const [activeTab, setActiveTab] = useState('game');
   const [texts, setTexts] = useState(INITIAL_CARDS);
   const [currentText, setCurrentText] = useState('');
   const [inputText, setInputText] = useState('');
@@ -159,6 +159,10 @@ const handlePlayerSelect = (playerId) => {
   }
 };
 
+    const isDuplicate = (text, index) => {
+    return texts.findIndex(t => t.toLowerCase() === text.toLowerCase()) !== index;
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'input':
@@ -186,10 +190,13 @@ const handlePlayerSelect = (playerId) => {
                     key={index}
                     className="flex items-center justify-between p-3 bg-purple-100 rounded-lg px-3"
                   >
-                    <span className="text-purple-800">
+                    <div className="flex items-center gap-2 text-purple-800">
                       <span className="font-bold mr-2">{index + 1}.</span>
-                      {text}
-                    </span>
+                      <span>{text}</span>
+                      {isDuplicate(text, index) && (
+                        <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                      )}
+                    </div>
                     <button
                       onClick={() => handleDeleteText(index)}
                       className="text-red-500 hover:text-red-700"
@@ -386,16 +393,7 @@ const handlePlayerSelect = (playerId) => {
 
         <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm">
           <div className="max-w-md mx-auto flex">
-            <button
-              onClick={() => setActiveTab('input')}
-              className={`flex-1 p-4 text-center font-medium ${
-                activeTab === 'input'
-                  ? 'text-purple-600 border-t-2 border-purple-600 bg-purple-100'
-                  : 'text-gray-500'
-              }`}
-            >
-              Mis Cartas
-            </button>
+            
             <button
               onClick={() => setActiveTab('game')}
               className={`flex-1 p-4 text-center font-medium ${
@@ -415,6 +413,16 @@ const handlePlayerSelect = (playerId) => {
               }`}
             >
               Jugadores
+            </button>
+            <button
+              onClick={() => setActiveTab('input')}
+              className={`flex-1 p-4 text-center font-medium ${
+                activeTab === 'input'
+                  ? 'text-purple-600 border-t-2 border-purple-600 bg-purple-100'
+                  : 'text-gray-500'
+              }`}
+            >
+              Mis Cartas
             </button>
             <button
               onClick={() => setActiveTab('history')}
