@@ -11,7 +11,7 @@ export const INITIAL_CARDS: string[] = [
 "Bob Marley",
 "Albert Einstein",
 "Marilyn Monroe",
-"Mozart",
+
 "Vincent van Gogh",
 "Martin Luther King",
 "Sherlock Holmes",
